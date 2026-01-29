@@ -9,7 +9,9 @@ import {
   LayoutGrid, 
   Building2,
   FileText,
-  X
+  X,
+  AlertCircle,
+  CheckCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRef } from "react";
@@ -25,6 +27,8 @@ interface ShopVerificationData {
 interface ShopVerificationStepProps {
   data: ShopVerificationData;
   onChange: (data: ShopVerificationData) => void;
+  errors: Record<string, string>;
+  showErrors: boolean;
 }
 
 interface ImageUploadCardProps {
@@ -33,9 +37,11 @@ interface ImageUploadCardProps {
   icon: React.ElementType;
   file: File | null;
   onFileChange: (file: File | null) => void;
+  required?: boolean;
+  hasError?: boolean;
 }
 
-function ImageUploadCard({ label, description, icon: Icon, file, onFileChange }: ImageUploadCardProps) {
+function ImageUploadCard({ label, description, icon: Icon, file, onFileChange, required, hasError }: ImageUploadCardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
@@ -62,7 +68,9 @@ function ImageUploadCard({ label, description, icon: Icon, file, onFileChange }:
         "relative flex flex-col items-center justify-center p-6 rounded-xl border-2 border-dashed cursor-pointer transition-all duration-200 min-h-[200px]",
         file 
           ? "border-success bg-success/5" 
-          : "border-border bg-card hover:border-primary/50 hover:bg-primary/5"
+          : hasError
+            ? "border-destructive bg-destructive/5"
+            : "border-border bg-card hover:border-primary/50 hover:bg-primary/5"
       )}
     >
       <input
@@ -76,7 +84,7 @@ function ImageUploadCard({ label, description, icon: Icon, file, onFileChange }:
       {file ? (
         <>
           <div className="w-16 h-16 rounded-2xl bg-success/10 flex items-center justify-center mb-3">
-            <Camera className="w-8 h-8 text-success" />
+            <CheckCircle className="w-8 h-8 text-success" />
           </div>
           <p className="text-sm font-medium text-foreground text-center truncate max-w-full px-2">
             {file.name}
@@ -96,12 +104,20 @@ function ImageUploadCard({ label, description, icon: Icon, file, onFileChange }:
         </>
       ) : (
         <>
-          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-3">
-            <Icon className="w-8 h-8 text-muted-foreground" />
+          <div className={cn(
+            "w-16 h-16 rounded-2xl flex items-center justify-center mb-3",
+            hasError ? "bg-destructive/10" : "bg-muted"
+          )}>
+            <Icon className={cn("w-8 h-8", hasError ? "text-destructive" : "text-muted-foreground")} />
           </div>
-          <p className="text-sm font-medium text-foreground text-center">{label}</p>
+          <p className="text-sm font-medium text-foreground text-center">
+            {label} {required && <span className="text-destructive">*</span>}
+          </p>
           <p className="text-xs text-muted-foreground text-center mt-1">{description}</p>
-          <div className="flex items-center gap-2 mt-3 text-primary">
+          <div className={cn(
+            "flex items-center gap-2 mt-3",
+            hasError ? "text-destructive" : "text-primary"
+          )}>
             <Upload className="w-4 h-4" />
             <span className="text-sm font-medium">Upload Image</span>
           </div>
@@ -111,7 +127,7 @@ function ImageUploadCard({ label, description, icon: Icon, file, onFileChange }:
   );
 }
 
-export function ShopVerificationStep({ data, onChange }: ShopVerificationStepProps) {
+export function ShopVerificationStep({ data, onChange, errors, showErrors }: ShopVerificationStepProps) {
   const handleImageChange = (field: keyof ShopVerificationData, file: File | null) => {
     onChange({ ...data, [field]: file });
   };
@@ -128,6 +144,13 @@ export function ShopVerificationStep({ data, onChange }: ShopVerificationStepPro
         </div>
       </div>
 
+      {showErrors && errors.shopImage && (
+        <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-destructive" />
+          <p className="text-sm text-destructive">{errors.shopImage}</p>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <ImageUploadCard
           label="Shop Front Image"
@@ -135,6 +158,8 @@ export function ShopVerificationStep({ data, onChange }: ShopVerificationStepPro
           icon={Store}
           file={data.shopImage}
           onFileChange={(file) => handleImageChange("shopImage", file)}
+          required
+          hasError={showErrors && !!errors.shopImage}
         />
         <ImageUploadCard
           label="Equipment & Tools"
