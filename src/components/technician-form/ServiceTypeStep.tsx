@@ -11,7 +11,8 @@ import {
   Truck,
   Car,
   Bike,
-  Bus
+  Bus,
+  AlertCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +24,8 @@ interface ServiceTypeData {
 interface ServiceTypeStepProps {
   data: ServiceTypeData;
   onChange: (data: ServiceTypeData) => void;
+  errors: Record<string, string>;
+  showErrors: boolean;
 }
 
 const SERVICES = [
@@ -42,7 +45,7 @@ const VEHICLE_TYPES = [
   { id: "commercial", label: "Commercial Vehicle", icon: Bus, description: "Trucks, Buses, Vans" },
 ];
 
-export function ServiceTypeStep({ data, onChange }: ServiceTypeStepProps) {
+export function ServiceTypeStep({ data, onChange, errors, showErrors }: ServiceTypeStepProps) {
   const toggleService = (serviceId: string) => {
     const newServices = data.services.includes(serviceId)
       ? data.services.filter((s) => s !== serviceId)
@@ -61,15 +64,22 @@ export function ServiceTypeStep({ data, onChange }: ServiceTypeStepProps) {
     <div className="space-y-8 animate-fade-in">
       {/* Services Section */}
       <div>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
             <Wrench className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-foreground">Services You Offer</h3>
+            <h3 className="text-lg font-semibold text-foreground">Services You Offer <span className="text-destructive">*</span></h3>
             <p className="text-sm text-muted-foreground">Select all services you can provide</p>
           </div>
         </div>
+
+        {showErrors && errors.services && (
+          <div className="mb-4 p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-destructive" />
+            <p className="text-sm text-destructive">{errors.services}</p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {SERVICES.map((service) => {
@@ -82,7 +92,8 @@ export function ServiceTypeStep({ data, onChange }: ServiceTypeStepProps) {
                   "relative flex flex-col items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200",
                   isSelected 
                     ? "border-primary bg-primary/5 shadow-card" 
-                    : "border-border bg-card hover:border-primary/50 hover:shadow-sm"
+                    : "border-border bg-card hover:border-primary/50 hover:shadow-sm",
+                  showErrors && errors.services && !isSelected && "border-destructive/30"
                 )}
               >
                 <div className={cn(
@@ -109,15 +120,22 @@ export function ServiceTypeStep({ data, onChange }: ServiceTypeStepProps) {
 
       {/* Vehicle Types Section */}
       <div>
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
             <Car className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-foreground">Vehicle Types You Handle</h3>
+            <h3 className="text-lg font-semibold text-foreground">Vehicle Types You Handle <span className="text-destructive">*</span></h3>
             <p className="text-sm text-muted-foreground">Select the types of vehicles you service</p>
           </div>
         </div>
+
+        {showErrors && errors.vehicleTypes && (
+          <div className="mb-4 p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-destructive" />
+            <p className="text-sm text-destructive">{errors.vehicleTypes}</p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {VEHICLE_TYPES.map((type) => {
@@ -130,7 +148,8 @@ export function ServiceTypeStep({ data, onChange }: ServiceTypeStepProps) {
                   "relative flex flex-col items-center p-6 rounded-xl border-2 cursor-pointer transition-all duration-200",
                   isSelected 
                     ? "border-primary bg-primary/5 shadow-card" 
-                    : "border-border bg-card hover:border-primary/50 hover:shadow-sm"
+                    : "border-border bg-card hover:border-primary/50 hover:shadow-sm",
+                  showErrors && errors.vehicleTypes && !isSelected && "border-destructive/30"
                 )}
               >
                 <div className={cn(
