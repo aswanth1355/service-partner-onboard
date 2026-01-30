@@ -14,13 +14,272 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      job_updates: {
+        Row: {
+          created_at: string | null
+          id: string
+          job_id: string
+          location_lat: number | null
+          location_lng: number | null
+          note: string | null
+          technician_id: string
+          update_type: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          job_id: string
+          location_lat?: number | null
+          location_lng?: number | null
+          note?: string | null
+          technician_id: string
+          update_type: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          job_id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          note?: string | null
+          technician_id?: string
+          update_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_updates_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_updates_technician_id_fkey"
+            columns: ["technician_id"]
+            isOneToOne: false
+            referencedRelation: "technician_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jobs: {
+        Row: {
+          accepted_at: string | null
+          assigned_technician_id: string | null
+          completed_at: string | null
+          created_at: string | null
+          customer_address: string | null
+          customer_id: string
+          customer_lat: number
+          customer_lng: number
+          customer_name: string
+          customer_phone: string | null
+          estimated_distance: number | null
+          estimated_price: number | null
+          final_price: number | null
+          id: string
+          notes: string | null
+          service_type: string
+          status: string | null
+          updated_at: string | null
+          vehicle_type: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          assigned_technician_id?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          customer_address?: string | null
+          customer_id: string
+          customer_lat: number
+          customer_lng: number
+          customer_name: string
+          customer_phone?: string | null
+          estimated_distance?: number | null
+          estimated_price?: number | null
+          final_price?: number | null
+          id?: string
+          notes?: string | null
+          service_type: string
+          status?: string | null
+          updated_at?: string | null
+          vehicle_type?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          assigned_technician_id?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          customer_address?: string | null
+          customer_id?: string
+          customer_lat?: number
+          customer_lng?: number
+          customer_name?: string
+          customer_phone?: string | null
+          estimated_distance?: number | null
+          estimated_price?: number | null
+          final_price?: number | null
+          id?: string
+          notes?: string | null
+          service_type?: string
+          status?: string | null
+          updated_at?: string | null
+          vehicle_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_assigned_technician_id_fkey"
+            columns: ["assigned_technician_id"]
+            isOneToOne: false
+            referencedRelation: "technician_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      technician_availability: {
+        Row: {
+          current_lat: number | null
+          current_lng: number | null
+          id: string
+          is_active: boolean | null
+          last_location_update: string | null
+          last_status_change: string | null
+          technician_id: string
+        }
+        Insert: {
+          current_lat?: number | null
+          current_lng?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_location_update?: string | null
+          last_status_change?: string | null
+          technician_id: string
+        }
+        Update: {
+          current_lat?: number | null
+          current_lng?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_location_update?: string | null
+          last_status_change?: string | null
+          technician_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "technician_availability_technician_id_fkey"
+            columns: ["technician_id"]
+            isOneToOne: true
+            referencedRelation: "technician_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      technician_earnings: {
+        Row: {
+          amount: number
+          description: string | null
+          earned_at: string | null
+          id: string
+          job_id: string | null
+          technician_id: string
+        }
+        Insert: {
+          amount: number
+          description?: string | null
+          earned_at?: string | null
+          id?: string
+          job_id?: string | null
+          technician_id: string
+        }
+        Update: {
+          amount?: number
+          description?: string | null
+          earned_at?: string | null
+          id?: string
+          job_id?: string | null
+          technician_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "technician_earnings_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "technician_earnings_technician_id_fkey"
+            columns: ["technician_id"]
+            isOneToOne: false
+            referencedRelation: "technician_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      technician_profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          full_name: string
+          gps_lat: number | null
+          gps_lng: number | null
+          id: string
+          phone: string
+          service_area: string | null
+          service_types: string[] | null
+          shop_address: string | null
+          shop_name: string | null
+          updated_at: string | null
+          vehicle_type: string | null
+          verification_status: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name: string
+          gps_lat?: number | null
+          gps_lng?: number | null
+          id: string
+          phone: string
+          service_area?: string | null
+          service_types?: string[] | null
+          shop_address?: string | null
+          shop_name?: string | null
+          updated_at?: string | null
+          vehicle_type?: string | null
+          verification_status?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name?: string
+          gps_lat?: number | null
+          gps_lng?: number | null
+          id?: string
+          phone?: string
+          service_area?: string | null
+          service_types?: string[] | null
+          shop_address?: string | null
+          shop_name?: string | null
+          updated_at?: string | null
+          vehicle_type?: string | null
+          verification_status?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_job_pending_or_assigned_to_me: {
+        Args: { job_id_param: string }
+        Returns: boolean
+      }
+      is_technician_assigned_to_job: {
+        Args: { job_id_param: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
