@@ -1,8 +1,12 @@
 import { TechnicianSignupForm } from "@/components/technician-form/TechnicianSignupForm";
-import { Wrench, Phone } from "lucide-react";
+import { Wrench, Phone, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -12,12 +16,28 @@ const Index = () => {
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <Wrench className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold text-primary">Towbuddy</span>
+            <span className="text-xl font-bold text-primary">ResQNow</span>
           </div>
-          <Button size="sm" className="flex items-center gap-2 bg-primary text-primary-foreground hover:bg-coral-dark">
-            <Phone className="w-4 h-4" />
-            <span className="hidden sm:inline">Emergency Call</span>
-          </Button>
+          <div className="flex items-center gap-2">
+            {user ? (
+              <Link to="/dashboard">
+                <Button size="sm" className="bg-primary text-primary-foreground hover:bg-coral-dark">
+                  Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/login">
+                <Button size="sm" variant="outline" className="flex items-center gap-2 border-primary text-primary hover:bg-primary/10">
+                  <LogIn className="w-4 h-4" />
+                  <span className="hidden sm:inline">Technician Login</span>
+                </Button>
+              </Link>
+            )}
+            <Button size="sm" className="flex items-center gap-2 bg-primary text-primary-foreground hover:bg-coral-dark">
+              <Phone className="w-4 h-4" />
+              <span className="hidden sm:inline">Emergency Call</span>
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -52,10 +72,10 @@ const Index = () => {
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <Wrench className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold text-primary">Towbuddy</span>
+            <span className="text-xl font-bold text-primary">ResQNow</span>
           </div>
           <p className="text-muted-foreground text-sm">
-            © 2024 Towbuddy. All rights reserved.
+            © 2024 ResQNow. All rights reserved.
           </p>
         </div>
       </footer>
